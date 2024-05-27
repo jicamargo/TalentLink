@@ -70,3 +70,7 @@ group :test do
   gem "selenium-webdriver"
 
 end
+
+gem 'omniauth'
+gem 'omniauth-linkedin-oauth2'
+gem 'devise'
