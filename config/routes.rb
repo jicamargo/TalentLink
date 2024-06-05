@@ -6,8 +6,7 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   root 'home#index'
-  get '/auth/:provider/callback', to: 'sessions#create'
-  get '/auth/failure', to: redirect('/')
-  delete '/logout', to: 'sessions#destroy'
+  get 'auth/linkedin/callback', to: 'sessions#linkedin_callback'
+  get 'auth/linkedin', to: 'sessions#linkedin_auth'
   
 end
