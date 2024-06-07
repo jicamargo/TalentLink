@@ -74,3 +74,5 @@ gem "tailwindcss-rails"
 gem 'omniauth'
 gem 'omniauth-linkedin-oauth2'
 gem 'devise'
+gem "simple_form"
+gem "simple_form-tailwind"
