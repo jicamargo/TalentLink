@@ -2,11 +2,23 @@
 <div class="container mx-auto px-4">
   <h1 class="text-4xl font-bold mt-8 mb-4">Perfil del Usuario</h1>
   <% if @user_profile %>
-    <p class="text-lg mb-4">Nombre: <%= @user_profile['name'] %></p>
-    <p class="text-lg mb-4">Email: <%= @user_profile['email'] %></p>
-    <p class="text-lg mb-4">Localización: <%= @user_profile['location'] %></p>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <p class="text-lg mb-4"><strong>Nombre:</strong> <%= @user_profile['localizedFirstName'] %> <%= @user_profile['localizedLastName'] %></p>
+        <p class="text-lg mb-4"><strong>Profesión:</strong> <%= @user_profile['headline'] %></p>
+        <p class="text-lg mb-4"><strong>Ubicación:</strong> <%= @user_profile['location']['name'] %></p>
+        <p class="text-lg mb-4"><strong>Industria:</strong> <%= @user_profile['industry'] %></p>
+        <p class="text-lg mb-4"><strong>URL de Perfil:</strong> <%= link_to @user_profile['publicProfileUrl'], @user_profile['publicProfileUrl'], target: '_blank' %></p>
+      </div>
+      <div>
+        <p class="text-lg mb-4"><strong>Correo Electrónico:</strong> <%= @user_profile['emailAddress'] %></p>
+        <p class="text-lg mb-4"><strong>Cumpleaños:</strong> <%= @user_profile['birthDate']['month'] %>/<%= @user_profile['birthDate']['day'] %>/<%= @user_profile['birthDate']['year'] %></p>
+        <p class="text-lg mb-4"><strong>Género:</strong> <%= @user_profile['gender']['localized']['es_ES'] %></p>
+        <p class="text-lg mb-4"><strong>Número de Teléfono:</strong> <%= @user_profile['phoneNumbers'].first['number'] %></p>
+      </div>
+    </div>
   <% else %>
     <p class="text-lg mb-4">No se ha encontrado información del perfil. Por favor, inicia sesión con LinkedIn.</p>
   <% end %>
-  <%= link_to "Volver a la página principal", root_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+  <%= link_to "Volver a la página principal", root_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block' %>
 </div>

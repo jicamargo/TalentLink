@@ -9,12 +9,11 @@ class SessionsController < ApplicationController
       token_url: '/oauth/v2/accessToken'
     )
 
-    redirect_uri = 'http://localhost:3000/auth/linkedin/callback' # Asegúrate de que esta URL coincida con la registrada en LinkedIn
+    redirect_uri = 'http://localhost:3000/auth/linkedin/callback'
     
     redirect_to client.auth_code.authorize_url(
       redirect_uri: redirect_uri, 
-      scope:  'r_liteprofile r_emailaddress w_member_social',
-      state: '123456'
+      scope:  'openid profile email'
     ), allow_other_host: true 
   end
 
@@ -36,14 +35,16 @@ class SessionsController < ApplicationController
     puts ">>>>>>>>>>>>>>>>>>>>"
     puts ">>>>>>>>>>>>>>>>>>>>  SessionsController.linkedin_callback :code #{code}"
     puts ">>>>>>>>>>>>>>>>>>>>"
-    redirect_uri = 'http://localhost:3000/auth/linkedin/callback' # Definir redirect_uri
-    token = client.auth_code.get_token(code, redirect_uri: redirect_uri, client_secret: Rails.application.credentials.linkedin[:client_secret])
+    redirect_uri = 'http://localhost:3000/auth/linkedin/callback'
+    token = client.auth_code.get_token(
+      code,
+      redirect_uri: redirect_uri,
+      scope:  'openid profile email',
+      client_secret: Rails.application.credentials.linkedin[:client_secret]
+    )
 
     # Almacenar el token de acceso en la sesión
     session[:access_token] = token.token
-
-    puts ">>>>>>>>>>>>>>>>>>>>  SessionsController.linkedin_callback :token.token #{token.token}" 
-    puts "session[:access_token] #{session[:access_token]}"
     redirect_to root_path, notice: 'Conexión exitosa con LinkedIn'
     #redirect_to profile_path
   end
@@ -60,21 +61,9 @@ class SessionsController < ApplicationController
       )
 
       token = OAuth2::AccessToken.new(client, access_token)
-      client_id = Rails.application.credentials.linkedin[:client_id]
-      redirect_uri = 'http://localhost:3000/auth/linkedin/callback'
-      # Utiliza el token de acceso para hacer solicitudes a la API de LinkedIn
-
-      #response = token.get("https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=123456&scope=r_liteprofile%20r_emailaddress%20w_member_social")
-      response = token.get('https://api.linkedin.com/v2/me')
+      response = token.get('https://api.linkedin.com/v2/userinfo')
       
       begin
-        puts ">>>>>>>>>>>>>>>>>>>>"
-        puts ">>>>>>>>>>>>>>>>>>>>"
-        puts ">>>>>>>>>>>>>>>>>>>>"
-        puts "SessionsController.profile :response.body #{response.body}"
-        puts ">>>>>>>>>>>>>>>>>>>>"
-        puts ">>>>>>>>>>>>>>>>>>>>"
-        puts ">>>>>>>>>>>>>>>>>>>>"
         @user_profile = JSON.parse(response.body)
         puts ">>>>>>>>>>>>>>>>>>>>  SessionsController.profile :user_profile #{@user_profile}"
       rescue OAuth2::Error => e
