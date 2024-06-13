@@ -1,0 +1,12 @@
+<!-- app/views/sessions/profile.html.erb -->
+<div class="container mx-auto px-4">
+  <h1 class="text-4xl font-bold mt-8 mb-4">Perfil del Usuario</h1>
+  <% if @user_profile %>
+    <p class="text-lg mb-4">Nombre: <%= @user_profile['name'] %></p>
+    <p class="text-lg mb-4">Email: <%= @user_profile['email'] %></p>
+    <p class="text-lg mb-4">Localización: <%= @user_profile['location'] %></p>
+  <% else %>
+    <p class="text-lg mb-4">No se ha encontrado información del perfil. Por favor, inicia sesión con LinkedIn.</p>
+  <% end %>
+  <%= link_to "Volver a la página principal", root_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+</div>
