@@ -77,3 +77,4 @@ gem 'devise'
 gem "simple_form"
 gem "simple_form-tailwind"
 gem 'httparty'
+gem 'jwt'

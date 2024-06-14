@@ -289,6 +289,7 @@ DEPENDENCIES
   devise
   httparty
   importmap-rails
+  jwt
   oauth2
   omniauth-linkedin-oauth2
   pg (~> 1.1)

@@ -4,21 +4,47 @@
   <% if @user_profile %>
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <p class="text-lg mb-4"><strong>Nombre:</strong> <%= @user_profile['localizedFirstName'] %> <%= @user_profile['localizedLastName'] %></p>
-        <p class="text-lg mb-4"><strong>Profesión:</strong> <%= @user_profile['headline'] %></p>
-        <p class="text-lg mb-4"><strong>Ubicación:</strong> <%= @user_profile['location']['name'] %></p>
+        <div class="flex items-center mb-4">
+          <% if @user_profile['picture'].present? %>
+            <img src="<%= @user_profile['picture'] %>" alt="Foto de Perfil" class="rounded-full h-12 w-12 mr-2">
+          <% else %>
+            <div class="rounded-full h-12 w-12 bg-gray-300 mr-2"></div>
+          <% end %>
+          <div>
+            <p class="text-lg font-bold"><%= @user_profile['name'] %></p>
+            <p class="text-lg"><strong>Profesión:</strong> <%= @user_profile['headline'] %></p>
+          </div>
+        </div>
+        <p class="text-lg mb-4"><strong>Ubicación:</strong> <%= @user_profile.dig('location', 'name') %></p>
         <p class="text-lg mb-4"><strong>Industria:</strong> <%= @user_profile['industry'] %></p>
-        <p class="text-lg mb-4"><strong>URL de Perfil:</strong> <%= link_to @user_profile['publicProfileUrl'], @user_profile['publicProfileUrl'], target: '_blank' %></p>
+        <p class="text-lg mb-4"><strong>URL de Perfil:</strong> <%= link_to @user_profile['publicProfileUrl'], @user_profile['publicProfileUrl'], target: '_blank' if @user_profile['publicProfileUrl'].present? %></p>
       </div>
       <div>
-        <p class="text-lg mb-4"><strong>Correo Electrónico:</strong> <%= @user_profile['emailAddress'] %></p>
-        <p class="text-lg mb-4"><strong>Cumpleaños:</strong> <%= @user_profile['birthDate']['month'] %>/<%= @user_profile['birthDate']['day'] %>/<%= @user_profile['birthDate']['year'] %></p>
-        <p class="text-lg mb-4"><strong>Género:</strong> <%= @user_profile['gender']['localized']['es_ES'] %></p>
-        <p class="text-lg mb-4"><strong>Número de Teléfono:</strong> <%= @user_profile['phoneNumbers'].first['number'] %></p>
+        <p class="text-lg mb-4"><strong>Correo Electrónico:</strong> <%= @user_profile['email'] %></p>
+        <p class="text-lg mb-4"><strong>Cumpleaños:</strong> <%= @user_profile.dig('birthDate', 'month') %>/<%= @user_profile.dig('birthDate', 'day') %>/<%= @user_profile.dig('birthDate', 'year') %></p>
+        <p class="text-lg mb-4"><strong>Género:</strong> <%= @user_profile.dig('gender', 'localized', 'es_ES') %></p>
+        <p class="text-lg mb-4"><strong>Número de Teléfono:</strong> <%= @user_profile.dig('phoneNumbers', 0, 'number') %></p>
       </div>
     </div>
   <% else %>
     <p class="text-lg mb-4">No se ha encontrado información del perfil. Por favor, inicia sesión con LinkedIn.</p>
   <% end %>
-  <%= link_to "Volver a la página principal", root_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block' %>
+
+  <!-- Botón para consultar posts -->
+  <%= link_to "Consultar Posts", get_user_posts_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block' %>
+
+  <% if @user_posts %>
+    <% @user_posts.each do |post| %>
+      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 class="text-2xl font-bold mb-4"><%= post['specificContent']['com.linkedin.ugc.ShareContent']['shareCommentary']['text'] %></h2>
+        
+        <!-- Botón para ver estadísticas del post -->
+        <%= link_to "Ver estadísticas", get_post_analytics_path(post_urn: post['id']), class: 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-block mb-2' %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-lg mb-4">No se han encontrado posts.</p>
+  <% end %>
+
+  <%= link_to "Volver a la página principal", root_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
 </div>
